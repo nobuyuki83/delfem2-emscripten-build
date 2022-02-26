@@ -3,6 +3,10 @@ echo "################################"
 echo "build examples_glfwnew"
 echo "################################"
 
+path_dir=`pwd -P`
+echo ${path_dir}
+
+
 option="-o index.js -std=c++17 -I../../../external/delfem2/include -s USE_WEBGL2=1 -s USE_GLFW=3 -s WASM=1"
 
 names=(
@@ -25,6 +29,13 @@ do
 	em++ ../../../external/delfem2/examples_newgl_glfw/$name/main.cpp $option
 	cd ../../../
 done
+
+name="07_RayCasting"
+cd docs/newgl_glfw/$name
+pwd
+em++ ../../../external/delfem2/examples_newgl_glfw/$name/main.cpp $option \
+	-DPATH_INPUT_DIR="" --preload-file ${path_dir}/external/delfem2/test_inputs/bunny_2k.ply@/bunny_2k.ply
+cd ../../../
 
 
 # =====================================

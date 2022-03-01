@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Page Title</title>
+</head>
+
+<script>
+    window.addEventListener('load', () => {
+        const f = document.getElementById('file1');
+        f.addEventListener('change', evt => {
+            file = evt.target.files[0];
+            // console.log(file);
+            let fr = new FileReader();
+            fr.onload = function (e) {
+                // console.log(fr.result);
+                view = new Uint8Array(fr.result)
+                // console.log("file content", fr.result)
+                FS.writeFile('input.txt', view);
+                Module.hoge();
+                // console.log("hoge");
+                out = FS.findObject("/output.txt").contents;
+                // console.log(typeof(out), Object.prototype.toString(out));
+                // console.log(out);
+                console.log(new TextDecoder().decode(out));
+            };
+            fr.readAsArrayBuffer(file);
+            /*
+            const input = evt.target;
+            for (let i = 0; i < input.files.length; i++) {            
+              console.log(input.files[i]);
+            }
+            */
+        });
+    });
+
+var Module = {
+    preRun: function () {
+        FS.createDataFile(
+            '/',  // parent folder
+            'input.txt',  // file name for C++
+            'input.txt',  // file name for html
+            true,  // read
+            true);  // write
+
+        FS.createDataFile(
+            '/',
+            'output.txt',  // file name for C++
+            'output.txt',  // file name for html
+            true,
+            true
+        );
+    },
+};
+</script>
+<script src="file.js"></script> <!-- emscripten file -->
+
+<body>
+
+<input type="file" id="file1">
+
+</body>
+</html>
+
+

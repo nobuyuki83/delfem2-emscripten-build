@@ -3,13 +3,15 @@
 #include <string>
 #include <emscripten/bind.h>
 
-void hoge () {
-  std::string line;
-  std::ifstream fin ("input.txt");
+void hoge (const std::string& fname) {
+  std::cout << "opening file in C++" << std::endl;
+  std::cout << "   file_name: " << fname << std::endl;
+  std::ifstream fin (fname);
   std::ofstream fout("output.txt");
-  while (std::getline (fin, line)){
-    // std::cout << line << std::endl;
-    fout << "hofdafda: " << line << std::endl;
+  for(unsigned int iline=0;;++iline){
+    std::string line;
+    if( !std::getline (fin, line) ){ break; }
+    fout << std::to_string(iline) << " : " << line << std::endl;
   }
 }
 

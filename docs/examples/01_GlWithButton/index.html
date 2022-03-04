@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Page Title</title>
+</head>
+
+<body>
+    <button id="button1">Click me</button>
+    <div class="emscripten_border">
+        <canvas id="myCanvas" width="300" height="300"></canvas>
+    </div>
+
+    <script>
+        window.addEventListener('load', () => {
+            const f = document.getElementById('button1');
+            f.addEventListener('click', evt => {
+                Module.hoge();
+            });
+        });
+        var Module = {
+            preRun: [],
+            postRun: [],
+            canvas: (function () {
+                var canvas = document.getElementById('myCanvas');
+                // As a default initial behavior, pop up an alert when webgl context is lost. To make your
+                // application robust, you may want to override this behavior before shipping!
+                // See http://www.khronos.org/registry/webgl/specs/latest/1.0/#5.15.2
+                canvas.addEventListener("webglcontextlost", (e) => { 
+                    alert('WebGL context lost. You will need to reload the page.'); 
+                    e.preventDefault(); }, 
+                    false);
+                return canvas;
+            })(),
+        };
+    </script>
+    <script src="index.js"></script> <!-- emscripten file -->
+
+</body>
+
+</html>

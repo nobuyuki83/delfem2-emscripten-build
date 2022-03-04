@@ -1,64 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <title>Page Title</title>
+    <title>Page Title</title>
 </head>
 
-<script>
-    window.addEventListener('load', () => {
-        const f = document.getElementById('file1');
-        f.addEventListener('change', evt => {
-            file = evt.target.files[0];
-            // console.log(file);
+<body>
+    <div id="drop-zone" style="border: 1px solid; padding: 30px;">
+        <p>Drag & drop file here or select in the dialog</p>    
+        <input type="file" id="file1">
+    </div>
+    <p id="file_content"></p>  <!-- the file content will be written here -->
+
+    <script>
+        function open_file(file) {
             let fr = new FileReader();
             fr.onload = function (e) {
                 // console.log(fr.result);
                 view = new Uint8Array(fr.result)
-                // console.log("file content", fr.result)
-                FS.writeFile('input.txt', view);
-                Module.hoge();
-                // console.log("hoge");
-                out = FS.findObject("/output.txt").contents;
-                // console.log(typeof(out), Object.prototype.toString(out));
-                // console.log(out);
-                console.log(new TextDecoder().decode(out));
+                FS.writeFile(file.name, view);
+                Module.hoge(file.name);
+                out = FS.findObject("output.txt").contents;
+                const fc = document.getElementById('file_content');
+                fc.innerText = new TextDecoder().decode(out);
             };
             fr.readAsArrayBuffer(file);
-            /*
-            const input = evt.target;
-            for (let i = 0; i < input.files.length; i++) {            
-              console.log(input.files[i]);
-            }
-            */
+        }
+
+        window.addEventListener('load', () => {
+            const f = document.getElementById('file1');
+            f.addEventListener('change', evt => {
+                file = evt.target.files[0];
+                open_file(file);
+                console.log(file.name);
+            });
+            var dropZone = document.getElementById('drop-zone');            
+            dropZone.addEventListener('dragover', function(e) {
+                e.stopPropagation();
+                e.preventDefault();
+                this.style.background = '#e1e7f0';
+            }, false);
+            dropZone.addEventListener('dragleave', function(e) {
+                e.stopPropagation();
+                e.preventDefault();
+                this.style.background = '#ffffff';
+            }, false);            
+            dropZone.addEventListener('drop', function(evt) {
+                evt.stopPropagation();
+                evt.preventDefault();
+                this.style.background = '#ffffff';
+                var files = evt.dataTransfer.files;                
+                if (files.length > 1){ return alert('please put only one file'); }
+                f.files = files;
+                file = files[0];
+                open_file(file);
+            }, false);
         });
-    });
+        
 
-var Module = {
-    preRun: function () {
-        FS.createDataFile(
-            '/',  // parent folder
-            'input.txt',  // file name for C++
-            'input.txt',  // file name for html
-            true,  // read
-            true);  // write
+        var Module = {
+            preRun: [],
+            postRun: []
+        };
 
-        FS.createDataFile(
-            '/',
-            'output.txt',  // file name for C++
-            'output.txt',  // file name for html
-            true,
-            true
-        );
-    },
-};
-</script>
-<script src="file.js"></script> <!-- emscripten file -->
-
-<body>
-
-<input type="file" id="file1">
+    </script>
+    <script src="file.js"></script> <!-- emscripten file -->
 
 </body>
+
 </html>
-
-

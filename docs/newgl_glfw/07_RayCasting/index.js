@@ -195,7 +195,7 @@ var Module = typeof Module !== 'undefined' ? Module : {};
     }
 
     }
-    loadPackage({"files": [{"filename": "/bunny_2k.ply", "start": 0, "end": 55935}], "remote_package_size": 55935, "package_uuid": "bc29c87f-7d57-4757-b8b4-3aef6af0288a"});
+    loadPackage({"files": [{"filename": "/bunny_2k.ply", "start": 0, "end": 55935}], "remote_package_size": 55935, "package_uuid": "7a36c360-1ecc-4ac7-b76c-02bbe0c5c4e1"});
 
   })();
 
